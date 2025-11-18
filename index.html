@@ -934,6 +934,61 @@
         
         <div class="card">
             <div class="card-header">
+                <i class="fas fa-balance-scale"></i>
+                <h2>Model Comparison: Random Forest vs XGBoost</h2>
+            </div>
+            
+            <div class="explanation">
+                <h3>Why We Chose Random Forest Over XGBoost</h3>
+                <p>While both Random Forest and XGBoost are powerful ensemble methods, we selected Random Forest for this production system based on several key factors:</p>
+            </div>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 1.1rem;">
+                <thead>
+                    <tr style="background-color: #4361ee; color: white;">
+                        <th style="padding: 15px; text-align: left; border: 1px solid #ddd;">Feature</th>
+                        <th style="padding: 15px; text-align: left; border: 1px solid #ddd;">Random Forest Regressor (Bagging)</th>
+                        <th style="padding: 15px; text-align: left; border: 1px solid #ddd;">XGBoost (Boosting)</th>
+                        <th style="padding: 15px; text-align: left; border: 1px solid #ddd;">Business Rationale for Choice</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background-color: #f8f9fa;">
+                        <td style="padding: 15px; border: 1px solid #ddd; font-weight: bold;">Model Architecture</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Bagging (Parallel). Builds many independent trees simultaneously and averages their results.</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Boosting (Sequential). Builds one tree at a time, where each new tree tries to correct the errors (residuals) of the previous cumulative model.</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Random Forest's independence provides safety.</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 15px; border: 1px solid #ddd; font-weight: bold;">Performance Ceiling</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Strong, Competitive. Highly effective, but may leave a small amount of accuracy on the table.</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Potentially Highest. Often wins competitive modeling contests (like Kaggle) due to its focus on squeezing out the last bit of performance. </td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">While XGBoost can be more accurate, the difference is often marginal for the heavy investment in tuning it requires.</td>
+                    </tr>
+                    <tr style="background-color: #f8f9fa;">
+                        <td style="padding: 15px; border: 1px solid #ddd; font-weight: bold;">Overfitting Risk</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Low Risk. The averaging of many independent trees naturally reduces variance, leading to excellent generalization (as seen by your low Training/Testing MAE difference).</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">High Risk. If not meticulously tuned, it can overfit the training data very easily, leading to great training scores but poor, volatile results in production. </td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">In a public valuation tool like Zestimate, model stability and low generalization error are paramount. Random Forest is inherently safer.</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 15px; border: 1px solid #ddd; font-weight: bold;">Interpretability</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">High. Provides clear, reliable Feature Importance scores. This is easier to explain to non-technical stakeholders. </td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Low. While feature importance can be extracted, the final model is a complex, cumulative sum of hundreds of trees, making it much more of a "black box."</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Explaining why a Zestimate changed to an agent or homeowner is crucial for trust. Random Forest is the most transparent.</td>
+                    </tr>
+                    <tr style="background-color: #f8f9fa;">
+                        <td style="padding: 15px; border: 1px solid #ddd; font-weight: bold;">Robustness to Outliers</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">High. Outliers affect only the specific trees in their subsample, and their influence is averaged out.</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Moderate/Low. Because XGBoost focuses heavily on correcting errors, it can sometimes disproportionately focus on and learn the noise introduced by extreme outliers. </td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Real estate data is noisy. Random Forest is more forgiving of data quality issues.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
                 <i class="fas fa-project-diagram"></i>
                 <h2>Project Workflow</h2>
             </div>
